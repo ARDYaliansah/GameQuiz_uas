@@ -5,6 +5,7 @@ class Question {
   final int correctAnswerIndex;
   final String category;
   final String explanation;
+  final String? imageUrl;
 
   Question({
     required this.id,
@@ -13,6 +14,7 @@ class Question {
     required this.correctAnswerIndex,
     required this.category,
     this.explanation = '',
+    this.imageUrl,
   });
 
   Map<String, dynamic> toMap() {
@@ -23,6 +25,7 @@ class Question {
       'correctAnswerIndex': correctAnswerIndex,
       'category': category,
       'explanation': explanation,
+      'imageUrl': imageUrl,
     };
   }
 
@@ -34,6 +37,7 @@ class Question {
       correctAnswerIndex: map['correctAnswerIndex'] ?? 0,
       category: map['category'] ?? '',
       explanation: map['explanation'] ?? '',
+      imageUrl: map['imageUrl'],
     );
   }
 }

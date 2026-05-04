@@ -93,39 +93,72 @@ class QuizScreen extends StatelessWidget {
   }
 
   Widget _buildQuestionCard(BuildContext context, QuizProvider provider, dynamic question) {
-    return Column(
-      key: ValueKey(provider.currentQuestionIndex),
-      children: [
-        Card(
-          elevation: 8,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          color: Colors.white.withOpacity(0.1),
-          child: Padding(
-            padding: const EdgeInsets.all(25.0),
-            child: Text(
-              question.text,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+    return SingleChildScrollView(
+      child: Column(
+        key: ValueKey(provider.currentQuestionIndex),
+        children: [
+          if (question.imageUrl != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: question.imageUrl!.startsWith('http')
+                    ? Image.network(
+                        question.imageUrl!,
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => _buildImageError(),
+                      )
+                    : Image.asset(
+                        question.imageUrl!,
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => _buildImageError(),
+                      ),
+              ),
+            ),
+          Card(
+            elevation: 8,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            color: Colors.white.withOpacity(0.1),
+            child: Padding(
+              padding: const EdgeInsets.all(25.0),
+              child: Text(
+                question.text,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
             ),
           ),
-        ),
-        const SizedBox(height: 40),
-        // Options
-        ...List.generate(
-          question.options.length,
-          (index) => Padding(
-            padding: const EdgeInsets.only(bottom: 15),
-            child: _OptionButton(
-              index: index,
-              text: question.options[index],
-              isSelected: provider.selectedAnswerIndex == index,
-              isCorrect: index == question.correctAnswerIndex,
-              showResult: provider.isAnswering,
-              onTap: () => provider.answerQuestion(index),
+          const SizedBox(height: 40),
+          // Options
+          ...List.generate(
+            question.options.length,
+            (index) => Padding(
+              padding: const EdgeInsets.only(bottom: 15),
+              child: _OptionButton(
+                index: index,
+                text: question.options[index],
+                isSelected: provider.selectedAnswerIndex == index,
+                isCorrect: index == question.correctAnswerIndex,
+                showResult: provider.isAnswering,
+                onTap: () => provider.answerQuestion(index),
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildImageError() {
+    return Container(
+      height: 200,
+      width: double.infinity,
+      color: Colors.grey.withOpacity(0.2),
+      child: const Icon(Icons.image_not_supported, size: 50, color: Colors.white54),
     );
   }
 }

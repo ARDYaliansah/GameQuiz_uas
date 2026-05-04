@@ -65,7 +65,7 @@ class QuizProvider with ChangeNotifier {
     _timer?.cancel();
     _lives--;
     _streak = 0;
-    _playSound('wrong.mp3');
+    _playSound('wrong.wav');
     if (_lives <= 0) {
       _endGame();
     } else {
@@ -88,11 +88,11 @@ class QuizProvider with ChangeNotifier {
       if (_streak >= 3) {
         _score += 5; // Streak bonus
       }
-      _playSound('correct.mp3');
+      _playSound('correct.wav');
     } else {
       _lives--;
       _streak = 0;
-      _playSound('wrong.mp3');
+      _playSound('wrong.wav');
     }
 
     notifyListeners();

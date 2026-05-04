@@ -6,7 +6,7 @@ class QuizRepository {
   }
 
   List<String> getCategories() {
-    return ['Teknologi', 'Sejarah', 'Film', 'Sains'];
+    return ['Teknologi', 'Sejarah', 'Film', 'Sains', 'Tebak Gambar'];
   }
 
   final List<Question> _allQuestions = [
@@ -62,6 +62,35 @@ class QuizRepository {
       correctAnswerIndex: 2,
       category: 'Film',
       explanation: 'Parasite adalah film non-bahasa Inggris pertama yang memenangkan Best Picture.',
+    ),
+
+    // Tebak Gambar
+    Question(
+      id: 'ig1',
+      text: 'Benda apa yang ada di gambar ini?',
+      options: ['Laptop', 'Televisi', 'Radio', 'Kamera'],
+      correctAnswerIndex: 0,
+      category: 'Tebak Gambar',
+      explanation: 'Ini adalah gambar sebuah laptop, perangkat komputer portabel.',
+      imageUrl: 'assets/images/laptop.png',
+    ),
+    Question(
+      id: 'ig2',
+      text: 'Menara terkenal ini berada di kota mana?',
+      options: ['London', 'Paris', 'Roma', 'Berlin'],
+      correctAnswerIndex: 1,
+      category: 'Tebak Gambar',
+      explanation: 'Menara Eiffel terletak di Paris, Prancis.',
+      imageUrl: 'https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?q=80&w=1000&auto=format&fit=crop',
+    ),
+    Question(
+      id: 'ig3',
+      text: 'Apa nama hewan yang ada di gambar ini?',
+      options: ['Harimau', 'Singa', 'Macan Tutul', 'Cheetah'],
+      correctAnswerIndex: 1,
+      category: 'Tebak Gambar',
+      explanation: 'Singa sering dijuluki sebagai raja hutan.',
+      imageUrl: 'https://images.unsplash.com/photo-1546182990-dffeafbe841d?q=80&w=1000&auto=format&fit=crop',
     ),
   ];
 }

@@ -91,6 +91,7 @@ class _CategoryCard extends StatelessWidget {
       case 'Sejarah': return Icons.history_edu_rounded;
       case 'Film': return Icons.movie_rounded;
       case 'Sains': return Icons.science_rounded;
+      case 'Tebak Gambar': return Icons.image_search_rounded;
       default: return Icons.category_rounded;
     }
   }
