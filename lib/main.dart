@@ -4,12 +4,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'providers/quiz_provider.dart';
 import 'ui/screens/splash_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(
     MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => QuizProvider()),
-      ],
+      providers: [ChangeNotifierProvider(create: (_) => QuizProvider())],
       child: const QuizGameApp(),
     ),
   );
@@ -21,18 +20,32 @@ class QuizGameApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'IT & Knowledge Quiz',
+      title: 'GAME QUIZ',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
+        brightness: Brightness.dark,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.deepPurple,
+          seedColor: const Color(0xFFFFD700), // Gold seed
+          primary: const Color(0xFFFFD700),
+          secondary: const Color(0xFF6C63FF),
+          surface: const Color(0xFF1A1F3C),
           brightness: Brightness.dark,
         ),
-        textTheme: GoogleFonts.poppinsTextTheme(
+        textTheme: GoogleFonts.outfitTextTheme(
           Theme.of(context).textTheme,
         ).apply(bodyColor: Colors.white, displayColor: Colors.white),
-        scaffoldBackgroundColor: const Color(0xFF0F0C29), // Deep space blue
+        scaffoldBackgroundColor: const Color(0xFF0A0E21), // Deeper navy
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFFFFD700),
+            foregroundColor: Colors.black87,
+            textStyle: const TextStyle(fontWeight: FontWeight.bold),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        ),
       ),
       home: const SplashScreen(),
     );

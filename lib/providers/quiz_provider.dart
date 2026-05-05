@@ -7,7 +7,6 @@ import '../data/services/storage_service.dart';
 class QuizProvider with ChangeNotifier {
   final QuizRepository _repository = QuizRepository();
   final StorageService _storageService = StorageService();
-  final AudioPlayer _audioPlayer = AudioPlayer();
 
   List<Question> _questions = [];
   int _currentQuestionIndex = 0;
@@ -50,7 +49,7 @@ class QuizProvider with ChangeNotifier {
   void _startTimer() {
     _timerSeconds = 15;
     _timer?.cancel();
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_timerSeconds > 0) {
         _timerSeconds--;
         notifyListeners();
@@ -64,7 +63,6 @@ class QuizProvider with ChangeNotifier {
     _timer?.cancel();
     _lives--;
     _streak = 0;
-    _playSound('wrong.wav');
     if (_lives <= 0) {
       _endGame();
     } else {
@@ -87,16 +85,14 @@ class QuizProvider with ChangeNotifier {
       if (_streak >= 3) {
         _score += 5; // Streak bonus
       }
-      _playSound('correct.wav');
     } else {
       _lives--;
       _streak = 0;
-      _playSound('wrong.wav');
     }
 
     notifyListeners();
 
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
 
     if (_lives <= 0) {
       _endGame();
@@ -124,19 +120,9 @@ class QuizProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void _playSound(String fileName) async {
-    try {
-      // Assuming assets/sounds/correct.mp3 and assets/sounds/wrong.mp3 exist
-      await _audioPlayer.play(AssetSource('sounds/$fileName'));
-    } catch (e) {
-      debugPrint('Error playing sound: $e');
-    }
-  }
-
   @override
   void dispose() {
     _timer?.cancel();
-    _audioPlayer.dispose();
     super.dispose();
   }
 }

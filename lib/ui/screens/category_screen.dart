@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/quiz_provider.dart';
 import '../../data/repositories/quiz_repository.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'quiz_screen.dart';
 
 class CategoryScreen extends StatelessWidget {
@@ -12,35 +13,30 @@ class CategoryScreen extends StatelessWidget {
     final categories = QuizRepository().getCategories();
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text('Pilih Kategori'),
+        title: Text('Select Category', style: GoogleFonts.outfit(fontWeight: FontWeight.w700)),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      extendBodyBehindAppBar: true,
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Color(0xFF0F0C29), Color(0xFF302B63)],
+            colors: [Color(0xFF0A0E21), Color(0xFF1D2136)],
           ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 100, 20, 20),
-          child: GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 20,
-              mainAxisSpacing: 20,
-              childAspectRatio: 1.1,
-            ),
-            itemCount: categories.length,
-            itemBuilder: (context, index) {
-              return _CategoryCard(category: categories[index]);
-            },
-          ),
+        child: ListView.builder(
+          padding: const EdgeInsets.fromLTRB(20, 120, 20, 20),
+          itemCount: categories.length,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 15),
+              child: _CategoryCard(category: categories[index]),
+            );
+          },
         ),
       ),
     );
@@ -54,31 +50,78 @@ class _CategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        context.read<QuizProvider>().startQuiz(category);
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const QuizScreen()));
-      },
-      borderRadius: BorderRadius.circular(20),
-      child: Card(
-        elevation: 10,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        color: Colors.white10,
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white24, width: 1),
+    final Color color = _getColor(category);
+    
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: color.withValues(alpha: 0.15),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(_getIcon(category), size: 50, color: Colors.purpleAccent),
-              const SizedBox(height: 10),
-              Text(
-                category,
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            context.read<QuizProvider>().startQuiz(category);
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const QuizScreen()));
+          },
+          borderRadius: BorderRadius.circular(20),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              gradient: LinearGradient(
+                colors: [
+                  color.withValues(alpha: 0.2),
+                  color.withValues(alpha: 0.05),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
-            ],
+              border: Border.all(color: color.withValues(alpha: 0.3), width: 1.5),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Icon(_getIcon(category), size: 30, color: color),
+                ),
+                const SizedBox(width: 20),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        category,
+                        style: GoogleFonts.outfit(
+                          fontWeight: FontWeight.w800,
+                          fontSize: 18,
+                          color: Colors.white,
+                        ),
+                      ),
+                      Text(
+                        'Challenge your skills',
+                        style: GoogleFonts.outfit(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 12,
+                          color: Colors.white60,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(Icons.arrow_forward_ios_rounded, size: 18, color: color.withValues(alpha: 0.5)),
+              ],
+            ),
           ),
         ),
       ),
@@ -87,12 +130,23 @@ class _CategoryCard extends StatelessWidget {
 
   IconData _getIcon(String category) {
     switch (category) {
-      case 'Teknologi': return Icons.computer_rounded;
-      case 'Sejarah': return Icons.history_edu_rounded;
-      case 'Film': return Icons.movie_rounded;
-      case 'Sains': return Icons.science_rounded;
-      case 'Tebak Gambar': return Icons.image_search_rounded;
-      default: return Icons.category_rounded;
+      case 'Teknologi': return Icons.settings_input_component_rounded;
+      case 'Sejarah': return Icons.account_balance_rounded;
+      case 'Film': return Icons.theaters_rounded;
+      case 'Sains': return Icons.biotech_rounded;
+      case 'Tebak Gambar': return Icons.auto_fix_high_rounded;
+      default: return Icons.auto_awesome_mosaic_rounded;
+    }
+  }
+
+  Color _getColor(String category) {
+    switch (category) {
+      case 'Teknologi': return const Color(0xFF00D2FF);
+      case 'Sejarah': return const Color(0xFFFFD700);
+      case 'Film': return const Color(0xFFFF4B2B);
+      case 'Sains': return const Color(0xFF00FF87);
+      case 'Tebak Gambar': return const Color(0xFF6C63FF);
+      default: return const Color(0xFFFFD700);
     }
   }
 }

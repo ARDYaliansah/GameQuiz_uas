@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/quiz_provider.dart';
 import 'result_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class QuizScreen extends StatelessWidget {
   const QuizScreen({super.key});
@@ -27,7 +28,7 @@ class QuizScreen extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Color(0xFF0F0C29), Color(0xFF302B63)],
+                colors: [Color(0xFF0A0E21), Color(0xFF1D2136)],
               ),
             ),
             child: SafeArea(
@@ -43,42 +44,79 @@ class QuizScreen extends StatelessWidget {
                           children: List.generate(
                             3,
                             (index) => Icon(
-                              Icons.favorite,
-                              color: index < provider.lives ? Colors.redAccent : Colors.grey,
+                              index < provider.lives ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
+                              color: index < provider.lives ? Colors.redAccent : Colors.white24,
                             ),
                           ),
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text('Score: ${provider.score}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                            if (provider.streak >= 3)
-                              const Text('STREAK BONUS!', style: TextStyle(color: Colors.amberAccent, fontSize: 12, fontWeight: FontWeight.bold)),
-                          ],
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.05),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                'SCORE: ${provider.score}',
+                                style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: Color(0xFFFFD700)),
+                              ),
+                              if (provider.streak >= 3)
+                                Text('STREAK x${provider.streak}', style: const TextStyle(color: Colors.orangeAccent, fontSize: 10, fontWeight: FontWeight.bold)),
+                            ],
+                          ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 20),
                     // Timer
-                    LinearProgressIndicator(
-                      value: provider.progress,
-                      backgroundColor: Colors.white12,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        provider.timerSeconds < 5 ? Colors.redAccent : Colors.blueAccent,
-                      ),
-                      minHeight: 10,
-                      borderRadius: BorderRadius.circular(10),
+                    Stack(
+                      children: [
+                        Container(
+                          height: 12,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.05),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        FractionallySizedBox(
+                          widthFactor: provider.progress,
+                          child: Container(
+                            height: 12,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: provider.timerSeconds < 5 
+                                  ? [Colors.red, Colors.orange] 
+                                  : [const Color(0xFFFFD700), Colors.amber],
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: (provider.timerSeconds < 5 ? Colors.red : const Color(0xFFFFD700)).withValues(alpha: 0.3),
+                                  blurRadius: 10,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 10),
-                    Text('${provider.timerSeconds}s', style: const TextStyle(fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 30),
+                    Text(
+                      '${provider.timerSeconds}s', 
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900, 
+                        color: provider.timerSeconds < 5 ? Colors.redAccent : Colors.white70,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
                     // Question Card with Animation
                     Expanded(
                       child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 500),
-                        transitionBuilder: (Widget child, Animation<double> animation) {
-                          return FadeTransition(opacity: animation, child: ScaleTransition(scale: animation, child: child));
-                        },
+                        duration: const Duration(milliseconds: 400),
                         child: _buildQuestionCard(context, provider, question),
                       ),
                     ),
@@ -100,36 +138,45 @@ class QuizScreen extends StatelessWidget {
           if (question.imageUrl != null)
             Padding(
               padding: const EdgeInsets.only(bottom: 20),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: question.imageUrl!.startsWith('http')
-                    ? Image.network(
-                        question.imageUrl!,
-                        height: 200,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => _buildImageError(),
-                      )
-                    : Image.asset(
-                        question.imageUrl!,
-                        height: 200,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => _buildImageError(),
-                      ),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 20, offset: const Offset(0, 10)),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: question.imageUrl!.startsWith('http')
+                      ? Image.network(
+                          question.imageUrl!,
+                          height: 220,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => _buildImageError(),
+                        )
+                      : Image.asset(
+                          question.imageUrl!,
+                          height: 220,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => _buildImageError(),
+                        ),
+                ),
               ),
             ),
-          Card(
-            elevation: 8,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            color: Colors.white.withOpacity(0.1),
-            child: Padding(
-              padding: const EdgeInsets.all(25.0),
-              child: Text(
-                question.text,
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(30),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.05),
+              borderRadius: BorderRadius.circular(30),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+            ),
+            child: Text(
+              question.text,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.bold, height: 1.4),
             ),
           ),
           const SizedBox(height: 40),
@@ -157,7 +204,7 @@ class QuizScreen extends StatelessWidget {
     return Container(
       height: 200,
       width: double.infinity,
-      color: Colors.grey.withOpacity(0.2),
+      color: Colors.grey.withValues(alpha: 0.2),
       child: const Icon(Icons.image_not_supported, size: 50, color: Colors.white54),
     );
   }
@@ -185,9 +232,9 @@ class _OptionButton extends StatelessWidget {
     Color cardColor = Colors.white10;
     if (showResult) {
       if (isCorrect) {
-        cardColor = Colors.green.withOpacity(0.6);
+        cardColor = Colors.green.withValues(alpha: 0.6);
       } else if (isSelected && !isCorrect) {
-        cardColor = Colors.red.withOpacity(0.6);
+        cardColor = Colors.red.withValues(alpha: 0.6);
       }
     }
 
