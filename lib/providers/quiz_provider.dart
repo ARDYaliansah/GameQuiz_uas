@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../data/models/question_model.dart';
 import '../data/repositories/quiz_repository.dart';
 import '../data/services/storage_service.dart';
-import 'package:audioplayers/audioplayers.dart';
 
 class QuizProvider with ChangeNotifier {
   final QuizRepository _repository = QuizRepository();
