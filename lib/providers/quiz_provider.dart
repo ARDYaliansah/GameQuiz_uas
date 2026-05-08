@@ -18,8 +18,20 @@ class QuizProvider with ChangeNotifier {
   bool _isGameOver = false;
   int? _selectedAnswerIndex;
   bool _isAnswering = false;
+  bool _isLoading = true;
+
+  QuizProvider() {
+    _init();
+  }
+
+  Future<void> _init() async {
+    await _repository.initialize();
+    _isLoading = false;
+    notifyListeners();
+  }
 
   // Getters
+  bool get isLoading => _isLoading;
   List<Question> get questions => _questions;
   int get currentQuestionIndex => _currentQuestionIndex;
   int get score => _score;
@@ -32,9 +44,9 @@ class QuizProvider with ChangeNotifier {
   Question get currentQuestion => _questions[_currentQuestionIndex];
   double get progress => _timerSeconds / 15;
 
-  void startQuiz(String category) {
-    _questions = _repository.getQuestionsByCategory(category);
-    _questions.shuffle();
+  void startQuiz(String category, int level) {
+    _questions = _repository.getQuestionsByCategoryAndLevel(category, level);
+    // Note: getQuestionsByCategoryAndLevel already shuffles the questions
     _currentQuestionIndex = 0;
     _score = 0;
     _lives = 3;

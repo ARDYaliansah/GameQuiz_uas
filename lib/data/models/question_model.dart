@@ -4,6 +4,7 @@ class Question {
   final List<String> options;
   final int correctAnswerIndex;
   final String category;
+  final int level;
   final String explanation;
   final String? imageUrl;
 
@@ -13,6 +14,7 @@ class Question {
     required this.options,
     required this.correctAnswerIndex,
     required this.category,
+    this.level = 1,
     this.explanation = '',
     this.imageUrl,
   });
@@ -24,6 +26,7 @@ class Question {
       'options': options,
       'correctAnswerIndex': correctAnswerIndex,
       'category': category,
+      'level': level,
       'explanation': explanation,
       'imageUrl': imageUrl,
     };
@@ -36,6 +39,7 @@ class Question {
       options: List<String>.from(map['options'] ?? []),
       correctAnswerIndex: map['correctAnswerIndex'] ?? 0,
       category: map['category'] ?? '',
+      level: map['level'] ?? 1,
       explanation: map['explanation'] ?? '',
       imageUrl: map['imageUrl'],
     );

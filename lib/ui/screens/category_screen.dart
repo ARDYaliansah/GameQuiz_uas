@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../providers/quiz_provider.dart';
 import '../../data/repositories/quiz_repository.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'level_screen.dart';
 import 'quiz_screen.dart';
 
 class CategoryScreen extends StatelessWidget {
@@ -20,24 +21,31 @@ class CategoryScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFF0A0E21), Color(0xFF1D2136)],
-          ),
-        ),
-        child: ListView.builder(
-          padding: const EdgeInsets.fromLTRB(20, 120, 20, 20),
-          itemCount: categories.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 15),
-              child: _CategoryCard(category: categories[index]),
-            );
-          },
-        ),
+      body: Consumer<QuizProvider>(
+        builder: (context, provider, child) {
+          if (provider.isLoading) {
+            return const Center(child: CircularProgressIndicator(color: Color(0xFFFFD700)));
+          }
+          return Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Color(0xFF0A0E21), Color(0xFF1D2136)],
+              ),
+            ),
+            child: ListView.builder(
+              padding: const EdgeInsets.fromLTRB(20, 120, 20, 20),
+              itemCount: categories.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 15),
+                  child: _CategoryCard(category: categories[index]),
+                );
+              },
+            ),
+          );
+        },
       ),
     );
   }
@@ -67,8 +75,15 @@ class _CategoryCard extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: () {
-            context.read<QuizProvider>().startQuiz(category);
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const QuizScreen()));
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => LevelScreen(
+                  category: category,
+                  categoryColor: color,
+                ),
+              ),
+            );
           },
           borderRadius: BorderRadius.circular(20),
           child: Container(

@@ -101,8 +101,8 @@ class ResultScreen extends StatelessWidget {
                       height: 60,
                       child: ElevatedButton(
                         onPressed: () {
-                          final category = provider.questions.first.category;
-                          provider.startQuiz(category);
+                          final firstQuestion = provider.questions.first;
+                          provider.startQuiz(firstQuestion.category, firstQuestion.level);
                           Navigator.pop(context);
                         },
                         style: ElevatedButton.styleFrom(
