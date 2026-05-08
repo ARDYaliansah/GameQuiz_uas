@@ -4,7 +4,6 @@ import '../../providers/quiz_provider.dart';
 import '../../data/repositories/quiz_repository.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'level_screen.dart';
-import 'quiz_screen.dart';
 
 class CategoryScreen extends StatelessWidget {
   const CategoryScreen({super.key});
@@ -16,7 +15,10 @@ class CategoryScreen extends StatelessWidget {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text('Select Category', style: GoogleFonts.outfit(fontWeight: FontWeight.w700)),
+        title: Text(
+          'Select Category',
+          style: GoogleFonts.outfit(fontWeight: FontWeight.w700),
+        ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -24,7 +26,9 @@ class CategoryScreen extends StatelessWidget {
       body: Consumer<QuizProvider>(
         builder: (context, provider, child) {
           if (provider.isLoading) {
-            return const Center(child: CircularProgressIndicator(color: Color(0xFFFFD700)));
+            return const Center(
+              child: CircularProgressIndicator(color: Color(0xFFFFD700)),
+            );
           }
           return Container(
             decoration: const BoxDecoration(
@@ -59,7 +63,7 @@ class _CategoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color color = _getColor(category);
-    
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
@@ -78,10 +82,8 @@ class _CategoryCard extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => LevelScreen(
-                  category: category,
-                  categoryColor: color,
-                ),
+                builder: (context) =>
+                    LevelScreen(category: category, categoryColor: color),
               ),
             );
           },
@@ -98,7 +100,10 @@ class _CategoryCard extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              border: Border.all(color: color.withValues(alpha: 0.3), width: 1.5),
+              border: Border.all(
+                color: color.withValues(alpha: 0.3),
+                width: 1.5,
+              ),
             ),
             child: Row(
               children: [
@@ -134,7 +139,11 @@ class _CategoryCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                Icon(Icons.arrow_forward_ios_rounded, size: 18, color: color.withValues(alpha: 0.5)),
+                Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 18,
+                  color: color.withValues(alpha: 0.5),
+                ),
               ],
             ),
           ),
@@ -145,23 +154,35 @@ class _CategoryCard extends StatelessWidget {
 
   IconData _getIcon(String category) {
     switch (category) {
-      case 'Teknologi': return Icons.settings_input_component_rounded;
-      case 'Sejarah': return Icons.account_balance_rounded;
-      case 'Film': return Icons.theaters_rounded;
-      case 'Sains': return Icons.biotech_rounded;
-      case 'Tebak Gambar': return Icons.auto_fix_high_rounded;
-      default: return Icons.auto_awesome_mosaic_rounded;
+      case 'Teknologi':
+        return Icons.settings_input_component_rounded;
+      case 'Sejarah':
+        return Icons.account_balance_rounded;
+      case 'Film':
+        return Icons.theaters_rounded;
+      case 'Sains':
+        return Icons.biotech_rounded;
+      case 'Tebak Gambar':
+        return Icons.auto_fix_high_rounded;
+      default:
+        return Icons.auto_awesome_mosaic_rounded;
     }
   }
 
   Color _getColor(String category) {
     switch (category) {
-      case 'Teknologi': return const Color(0xFF00D2FF);
-      case 'Sejarah': return const Color(0xFFFFD700);
-      case 'Film': return const Color(0xFFFF4B2B);
-      case 'Sains': return const Color(0xFF00FF87);
-      case 'Tebak Gambar': return const Color(0xFF6C63FF);
-      default: return const Color(0xFFFFD700);
+      case 'Teknologi':
+        return const Color(0xFF00D2FF);
+      case 'Sejarah':
+        return const Color(0xFFFFD700);
+      case 'Film':
+        return const Color(0xFFFF4B2B);
+      case 'Sains':
+        return const Color(0xFF00FF87);
+      case 'Tebak Gambar':
+        return const Color(0xFF6C63FF);
+      default:
+        return const Color(0xFFFFD700);
     }
   }
 }
