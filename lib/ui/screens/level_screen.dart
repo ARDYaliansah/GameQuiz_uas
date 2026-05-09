@@ -82,7 +82,7 @@ class _LevelCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: color.withValues(alpha: 0.15),
+            color: color.withOpacity(0.15),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -98,13 +98,13 @@ class _LevelCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
               gradient: LinearGradient(
                 colors: [
-                  color.withValues(alpha: 0.2),
-                  color.withValues(alpha: 0.05),
+                  color.withOpacity(0.2),
+                  color.withOpacity(0.05),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              border: Border.all(color: color.withValues(alpha: 0.3), width: 1.5),
+              border: Border.all(color: color.withOpacity(0.3), width: 1.5),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

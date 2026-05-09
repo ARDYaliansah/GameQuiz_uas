@@ -34,10 +34,10 @@ class ResultScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(30),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: (isWin ? const Color(0xFFFFD700) : Colors.redAccent).withValues(alpha: 0.1),
+                    color: (isWin ? const Color(0xFFFFD700) : Colors.redAccent).withOpacity(0.1),
                     boxShadow: [
                       BoxShadow(
-                        color: (isWin ? const Color(0xFFFFD700) : Colors.redAccent).withValues(alpha: 0.2),
+                        color: (isWin ? const Color(0xFFFFD700) : Colors.redAccent).withOpacity(0.2),
                         blurRadius: 30,
                         spreadRadius: 5,
                       ),
@@ -72,9 +72,9 @@ class ResultScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 30),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.05),
+                    color: Colors.white.withOpacity(0.05),
                     borderRadius: BorderRadius.circular(30),
-                    border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+                    border: Border.all(color: Colors.white.withOpacity(0.1)),
                   ),
                   child: Column(
                     children: [
@@ -89,7 +89,7 @@ class ResultScreen extends StatelessWidget {
                       ),
                       Text(
                         'POINTS',
-                        style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w700, color: const Color(0xFFFFD700).withValues(alpha: 0.6)),
+                        style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w700, color: const Color(0xFFFFD700).withOpacity(0.6)),
                       ),
                     ],
                   ),
@@ -130,10 +130,10 @@ class ResultScreen extends StatelessWidget {
                             }
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: isWin && provider.hasNextLevel ? Colors.white.withValues(alpha: 0.1) : const Color(0xFFFFD700),
+                            backgroundColor: isWin && provider.hasNextLevel ? Colors.white.withOpacity(0.1) : const Color(0xFFFFD700),
                             foregroundColor: isWin && provider.hasNextLevel ? Colors.white : Colors.black87,
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                            side: isWin && provider.hasNextLevel ? BorderSide(color: Colors.white.withValues(alpha: 0.2)) : BorderSide.none,
+                            side: isWin && provider.hasNextLevel ? BorderSide(color: Colors.white.withOpacity(0.2)) : BorderSide.none,
                           ),
                           child: const Text('REPLAY QUIZ', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16, letterSpacing: 1)),
                         ),
@@ -152,7 +152,7 @@ class ResultScreen extends StatelessWidget {
                             foregroundColor: Colors.white70,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
-                              side: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
+                              side: BorderSide(color: Colors.white.withOpacity(0.1)),
                             ),
                           ),
                           child: const Text('KEMBALI KE MENU', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16, letterSpacing: 1)),

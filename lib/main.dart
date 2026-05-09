@@ -2,13 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'providers/quiz_provider.dart';
+import 'providers/settings_provider.dart';
+import 'data/services/audio_service.dart';
 import 'ui/screens/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await AudioService().init();
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => QuizProvider())],
+      providers: [
+        ChangeNotifierProvider(create: (_) => QuizProvider()),
+        ChangeNotifierProvider(create: (_) => SettingsProvider()),
+      ],
       child: const QuizGameApp(),
     ),
   );

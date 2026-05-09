@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import '../data/models/question_model.dart';
 import '../data/repositories/quiz_repository.dart';
 import '../data/services/storage_service.dart';
+import '../data/services/audio_service.dart';
 
 class QuizProvider with ChangeNotifier {
   final QuizRepository _repository = QuizRepository();
   final StorageService _storageService = StorageService();
+  final AudioService _audioService = AudioService();
 
   List<Question> _questions = [];
   int _currentQuestionIndex = 0;
@@ -67,6 +69,7 @@ class QuizProvider with ChangeNotifier {
     _selectedAnswerIndex = null;
     _isAnswering = false;
     _startTimer();
+    _audioService.playBackgroundMusic();
     notifyListeners();
   }
 
@@ -87,6 +90,8 @@ class QuizProvider with ChangeNotifier {
     _timer?.cancel();
     _lives--;
     _streak = 0;
+    _audioService.playWrongSound();
+    _audioService.vibrate();
     if (_lives <= 0) {
       _endGame();
     } else {
@@ -109,9 +114,12 @@ class QuizProvider with ChangeNotifier {
       if (_streak >= 3) {
         _score += 5; // Streak bonus
       }
+      _audioService.playCorrectSound();
     } else {
       _lives--;
       _streak = 0;
+      _audioService.playWrongSound();
+      _audioService.vibrate();
     }
 
     notifyListeners();
@@ -140,8 +148,14 @@ class QuizProvider with ChangeNotifier {
   void _endGame() {
     _isGameOver = true;
     _timer?.cancel();
+    _audioService.stopBackgroundMusic();
     _storageService.saveHighScore(_score);
     notifyListeners();
+  }
+
+  void stopQuiz() {
+    _timer?.cancel();
+    _audioService.stopBackgroundMusic();
   }
 
   void startNextLevel() {

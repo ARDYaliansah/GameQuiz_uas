@@ -1,7 +1,11 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'category_screen.dart';
 import '../../data/services/storage_service.dart';
-import 'package:google_fonts/google_fonts.dart';
+import '../../providers/settings_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -47,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       const Color(0xFFFFD700),
                       () => Navigator.push(context, MaterialPageRoute(builder: (context) => const CategoryScreen())),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 15),
                     _buildMenuButton(
                       context,
                       'HIGH SCORE',
@@ -60,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         }
                       },
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 15),
                     _buildMenuButton(
                       context,
                       'SETTINGS',
@@ -68,10 +72,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       const Color(0xFFE0E0E0),
                       () => _showSettingsDialog(context),
                     ),
+                    const SizedBox(height: 15),
+                    _buildMenuButton(
+                      context,
+                      'EXIT',
+                      Icons.exit_to_app_rounded,
+                      const Color(0xFFFF5252),
+                      () => _showExitConfirmation(context),
+                    ),
                   ],
                 ),
               ),
-              const SizedBox(height: 60),
+              const SizedBox(height: 40),
             ],
           ),
         ),
@@ -86,10 +98,10 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: const Color(0xFFFFD700).withValues(alpha: 0.1),
+            color: const Color(0xFFFFD700).withOpacity(0.1),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFFFFD700).withValues(alpha: 0.2),
+                color: const Color(0xFFFFD700).withOpacity(0.2),
                 blurRadius: 30,
                 spreadRadius: 5,
               ),
@@ -122,14 +134,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildMenuButton(BuildContext context, String title, IconData icon, Color color, VoidCallback onTap) {
     bool isPrimary = title == 'PLAY GAME';
+    bool isExit = title == 'EXIT';
     return Container(
       width: double.infinity,
-      height: 65,
+      height: 60,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         boxShadow: isPrimary ? [
           BoxShadow(
-            color: color.withValues(alpha: 0.3),
+            color: color.withOpacity(0.3),
             blurRadius: 15,
             offset: const Offset(0, 5),
           ),
@@ -138,22 +151,22 @@ class _HomeScreenState extends State<HomeScreen> {
       child: ElevatedButton(
         onPressed: onTap,
         style: ElevatedButton.styleFrom(
-          backgroundColor: isPrimary ? color : Colors.white.withValues(alpha: 0.05),
-          foregroundColor: isPrimary ? Colors.black87 : Colors.white,
+          backgroundColor: isPrimary ? color : isExit ? color.withOpacity(0.1) : Colors.white.withOpacity(0.05),
+          foregroundColor: isPrimary ? Colors.black87 : isExit ? color : Colors.white,
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
-            side: isPrimary ? BorderSide.none : BorderSide(color: Colors.white.withValues(alpha: 0.1)),
+            side: isPrimary ? BorderSide.none : BorderSide(color: isExit ? color.withOpacity(0.3) : Colors.white.withOpacity(0.1)),
           ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 28),
+            Icon(icon, size: 24),
             const SizedBox(width: 15),
             Text(
               title,
-              style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 18, letterSpacing: 1),
+              style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16, letterSpacing: 1),
             ),
           ],
         ),
@@ -190,20 +203,33 @@ class _HomeScreenState extends State<HomeScreen> {
   void _showSettingsDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
+      builder: (context) => Consumer<SettingsProvider>(
+        builder: (context, settings, child) => AlertDialog(
           backgroundColor: const Color(0xFF1D2136),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: const Text('Settings', style: TextStyle(color: Colors.white)),
-          content: const Column(
+          title: const Row(
+            children: [
+              Icon(Icons.settings_rounded, color: Color(0xFFFFD700)),
+              SizedBox(width: 10),
+              Text('Settings', style: TextStyle(color: Colors.white)),
+            ],
+          ),
+          content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 20),
-                child: Text(
-                  'No settings available yet.',
-                  style: TextStyle(color: Colors.white70),
-                ),
+              SwitchListTile(
+                title: const Text('Sound Effects', style: TextStyle(color: Colors.white)),
+                subtitle: const Text('Play sounds during game', style: TextStyle(color: Colors.white70, fontSize: 12)),
+                value: settings.isSoundEnabled,
+                activeColor: const Color(0xFFFFD700),
+                onChanged: (value) => settings.toggleSound(value),
+              ),
+              SwitchListTile(
+                title: const Text('Vibration', style: TextStyle(color: Colors.white)),
+                subtitle: const Text('Vibrate on wrong answers', style: TextStyle(color: Colors.white70, fontSize: 12)),
+                value: settings.isVibrationEnabled,
+                activeColor: const Color(0xFFFFD700),
+                onChanged: (value) => settings.toggleVibration(value),
               ),
             ],
           ),
@@ -214,6 +240,35 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showExitConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFF1D2136),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text('Exit Game', style: TextStyle(color: Colors.white)),
+        content: const Text('Are you sure you want to exit the game?', style: TextStyle(color: Colors.white70)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('CANCEL', style: TextStyle(color: Colors.white60)),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (Platform.isAndroid || Platform.isIOS) {
+                SystemNavigator.pop();
+              } else {
+                exit(0);
+              }
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFFF5252), foregroundColor: Colors.white),
+            child: const Text('EXIT'),
+          ),
+        ],
       ),
     );
   }
