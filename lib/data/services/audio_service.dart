@@ -9,7 +9,7 @@ class AudioService {
 
   final AudioPlayer _musicPlayer = AudioPlayer();
   final AudioPlayer _effectPlayer = AudioPlayer();
-  
+
   bool _isSoundEnabled = true;
   bool _isVibrationEnabled = true;
 
@@ -20,7 +20,7 @@ class AudioService {
     final prefs = await SharedPreferences.getInstance();
     _isSoundEnabled = prefs.getBool('sound_enabled') ?? true;
     _isVibrationEnabled = prefs.getBool('vibration_enabled') ?? true;
-    
+
     _musicPlayer.setReleaseMode(ReleaseMode.loop);
   }
 
@@ -28,7 +28,7 @@ class AudioService {
     _isSoundEnabled = enabled;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('sound_enabled', enabled);
-    
+
     if (!enabled) {
       await stopBackgroundMusic();
     } else {
@@ -45,7 +45,10 @@ class AudioService {
   Future<void> playBackgroundMusic() async {
     if (!_isSoundEnabled) return;
     try {
-      await _musicPlayer.play(AssetSource('sounds/background.wav'), volume: 0.3);
+      await _musicPlayer.play(
+        AssetSource('sounds/background.wav'),
+        volume: 0.3,
+      );
     } catch (e) {
       print("Error playing background music: $e");
     }
@@ -75,7 +78,7 @@ class AudioService {
 
   Future<void> vibrate() async {
     if (!_isVibrationEnabled) return;
-    if (await Vibration.hasVibrator() ?? false) {
+    if (await Vibration.hasVibrator()) {
       Vibration.vibrate(duration: 500);
     }
   }
