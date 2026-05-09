@@ -19,6 +19,8 @@ class QuizProvider with ChangeNotifier {
   int? _selectedAnswerIndex;
   bool _isAnswering = false;
   bool _isLoading = true;
+  String? _currentCategory;
+  int? _currentLevel;
 
   QuizProvider() {
     _init();
@@ -43,8 +45,18 @@ class QuizProvider with ChangeNotifier {
   bool get isAnswering => _isAnswering;
   Question get currentQuestion => _questions[_currentQuestionIndex];
   double get progress => _timerSeconds / 15;
+  String? get currentCategory => _currentCategory;
+  int? get currentLevel => _currentLevel;
+
+  bool get hasNextLevel {
+    if (_currentCategory == null || _currentLevel == null) return false;
+    final totalLevels = _repository.getLevelsCountForCategory(_currentCategory!);
+    return _currentLevel! < totalLevels;
+  }
 
   void startQuiz(String category, int level) {
+    _currentCategory = category;
+    _currentLevel = level;
     _questions = _repository.getQuestionsByCategoryAndLevel(category, level);
     // Note: getQuestionsByCategoryAndLevel already shuffles the questions
     _currentQuestionIndex = 0;
@@ -130,6 +142,12 @@ class QuizProvider with ChangeNotifier {
     _timer?.cancel();
     _storageService.saveHighScore(_score);
     notifyListeners();
+  }
+
+  void startNextLevel() {
+    if (hasNextLevel) {
+      startQuiz(_currentCategory!, _currentLevel! + 1);
+    }
   }
 
   @override
