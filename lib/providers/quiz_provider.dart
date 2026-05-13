@@ -15,8 +15,6 @@ class QuizProvider with ChangeNotifier {
   int _score = 0;
   int _lives = 3;
   int _streak = 0;
-  int _timerSeconds = 15;
-  Timer? _timer;
   bool _isGameOver = false;
   int? _selectedAnswerIndex;
   bool _isAnswering = false;
@@ -41,12 +39,11 @@ class QuizProvider with ChangeNotifier {
   int get score => _score;
   int get lives => _lives;
   int get streak => _streak;
-  int get timerSeconds => _timerSeconds;
   bool get isGameOver => _isGameOver;
   int? get selectedAnswerIndex => _selectedAnswerIndex;
   bool get isAnswering => _isAnswering;
   Question get currentQuestion => _questions[_currentQuestionIndex];
-  double get progress => _timerSeconds / 15;
+  double get progress => (_currentQuestionIndex + 1) / _questions.length;
   String? get currentCategory => _currentCategory;
   int? get currentLevel => _currentLevel;
 
@@ -60,7 +57,6 @@ class QuizProvider with ChangeNotifier {
     _currentCategory = category;
     _currentLevel = level;
     _questions = _repository.getQuestionsByCategoryAndLevel(category, level);
-    // Note: getQuestionsByCategoryAndLevel already shuffles the questions
     _currentQuestionIndex = 0;
     _score = 0;
     _lives = 3;
@@ -68,35 +64,7 @@ class QuizProvider with ChangeNotifier {
     _isGameOver = false;
     _selectedAnswerIndex = null;
     _isAnswering = false;
-    _startTimer();
     _audioService.playBackgroundMusic();
-    notifyListeners();
-  }
-
-  void _startTimer() {
-    _timerSeconds = 15;
-    _timer?.cancel();
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_timerSeconds > 0) {
-        _timerSeconds--;
-        notifyListeners();
-      } else {
-        _handleTimeOut();
-      }
-    });
-  }
-
-  void _handleTimeOut() {
-    _timer?.cancel();
-    _lives--;
-    _streak = 0;
-    _audioService.playWrongSound();
-    _audioService.vibrate();
-    if (_lives <= 0) {
-      _endGame();
-    } else {
-      _nextQuestion();
-    }
     notifyListeners();
   }
 
@@ -104,7 +72,6 @@ class QuizProvider with ChangeNotifier {
     if (_isAnswering || _isGameOver) return;
     _isAnswering = true;
     _selectedAnswerIndex = index;
-    _timer?.cancel();
 
     bool isCorrect = index == currentQuestion.correctAnswerIndex;
 
@@ -138,7 +105,6 @@ class QuizProvider with ChangeNotifier {
       _currentQuestionIndex++;
       _selectedAnswerIndex = null;
       _isAnswering = false;
-      _startTimer();
     } else {
       _endGame();
     }
@@ -147,14 +113,12 @@ class QuizProvider with ChangeNotifier {
 
   void _endGame() {
     _isGameOver = true;
-    _timer?.cancel();
     _audioService.stopBackgroundMusic();
     _storageService.saveHighScore(_score);
     notifyListeners();
   }
 
   void stopQuiz() {
-    _timer?.cancel();
     _audioService.stopBackgroundMusic();
   }
 
@@ -166,7 +130,6 @@ class QuizProvider with ChangeNotifier {
 
   @override
   void dispose() {
-    _timer?.cancel();
     super.dispose();
   }
 }

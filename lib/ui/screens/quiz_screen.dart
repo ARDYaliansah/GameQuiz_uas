@@ -41,35 +41,59 @@ class QuizScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         IconButton(
-                          onPressed: () => _showQuitConfirmation(context, provider),
-                          icon: const Icon(Icons.close_rounded, color: Colors.white70),
+                          onPressed: () =>
+                              _showQuitConfirmation(context, provider),
+                          icon: const Icon(
+                            Icons.close_rounded,
+                            color: Colors.white70,
+                          ),
                           tooltip: 'Quit Quiz',
                         ),
                         Row(
                           children: List.generate(
                             3,
                             (index) => Icon(
-                              index < provider.lives ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
-                              color: index < provider.lives ? Colors.redAccent : Colors.white24,
+                              index < provider.lives
+                                  ? Icons.favorite_rounded
+                                  : Icons.favorite_outline_rounded,
+                              color: index < provider.lives
+                                  ? Colors.redAccent
+                                  : Colors.white24,
                             ),
                           ),
                         ),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 15,
+                            vertical: 8,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.white.withOpacity(0.05),
                             borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: Colors.white.withOpacity(0.1)),
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.1),
+                            ),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Text(
                                 'SCORE: ${provider.score}',
-                                style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: Color(0xFFFFD700)),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 16,
+                                  color: Color(0xFFFFD700),
+                                ),
                               ),
                               if (provider.streak >= 3)
-                                Text('STREAK x${provider.streak}', style: const TextStyle(color: Colors.orangeAccent, fontSize: 10, fontWeight: FontWeight.bold)),
+                                Text(
+                                  'STREAK x${provider.streak}',
+                                  style: const TextStyle(
+                                    color: Colors.orangeAccent,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                             ],
                           ),
                         ),
@@ -77,44 +101,15 @@ class QuizScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     // Timer
-                    Stack(
-                      children: [
-                        Container(
-                          height: 12,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.05),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: LinearProgressIndicator(
+                        value: provider.progress,
+                        backgroundColor: Colors.white.withOpacity(0.05),
+                        valueColor: const AlwaysStoppedAnimation<Color>(
+                          Color(0xFFFFD700),
                         ),
-                        FractionallySizedBox(
-                          widthFactor: provider.progress,
-                          child: Container(
-                            height: 12,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: provider.timerSeconds < 5 
-                                  ? [Colors.red, Colors.orange] 
-                                  : [const Color(0xFFFFD700), Colors.amber],
-                              ),
-                              borderRadius: BorderRadius.circular(10),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: (provider.timerSeconds < 5 ? Colors.red : const Color(0xFFFFD700)).withOpacity(0.3),
-                                  blurRadius: 10,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      '${provider.timerSeconds}s', 
-                      style: TextStyle(
-                        fontWeight: FontWeight.w900, 
-                        color: provider.timerSeconds < 5 ? Colors.redAccent : Colors.white70,
+                        minHeight: 8,
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -135,7 +130,11 @@ class QuizScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildQuestionCard(BuildContext context, QuizProvider provider, dynamic question) {
+  Widget _buildQuestionCard(
+    BuildContext context,
+    QuizProvider provider,
+    dynamic question,
+  ) {
     return SingleChildScrollView(
       child: Column(
         key: ValueKey(provider.currentQuestionIndex),
@@ -147,7 +146,11 @@ class QuizScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
-                    BoxShadow(color: Colors.black.withOpacity(0.3), blurRadius: 20, offset: const Offset(0, 10)),
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
+                    ),
                   ],
                 ),
                 child: ClipRRect(
@@ -158,14 +161,34 @@ class QuizScreen extends StatelessWidget {
                           height: 220,
                           width: double.infinity,
                           fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) => _buildImageError(),
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Container(
+                              height: 220,
+                              width: double.infinity,
+                              color: Colors.white.withOpacity(0.05),
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  value:
+                                      loadingProgress.expectedTotalBytes != null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                            loadingProgress.expectedTotalBytes!
+                                      : null,
+                                  color: const Color(0xFFFFD700),
+                                ),
+                              ),
+                            );
+                          },
+                          errorBuilder: (context, error, stackTrace) =>
+                              _buildImageError(),
                         )
                       : Image.asset(
                           question.imageUrl!,
                           height: 220,
                           width: double.infinity,
                           fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) => _buildImageError(),
+                          errorBuilder: (context, error, stackTrace) =>
+                              _buildImageError(),
                         ),
                 ),
               ),
@@ -181,7 +204,11 @@ class QuizScreen extends StatelessWidget {
             child: Text(
               question.text,
               textAlign: TextAlign.center,
-              style: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.bold, height: 1.4),
+              style: GoogleFonts.outfit(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                height: 1.4,
+              ),
             ),
           ),
           const SizedBox(height: 40),
@@ -210,7 +237,11 @@ class QuizScreen extends StatelessWidget {
       height: 200,
       width: double.infinity,
       color: Colors.grey.withOpacity(0.2),
-      child: const Icon(Icons.image_not_supported, size: 50, color: Colors.white54),
+      child: const Icon(
+        Icons.image_not_supported,
+        size: 50,
+        color: Colors.white54,
+      ),
     );
   }
 
@@ -221,11 +252,17 @@ class QuizScreen extends StatelessWidget {
         backgroundColor: const Color(0xFF1D2136),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: const Text('Quit Quiz?', style: TextStyle(color: Colors.white)),
-        content: const Text('Are you sure you want to quit? Your progress will be lost.', style: TextStyle(color: Colors.white70)),
+        content: const Text(
+          'Are you sure you want to quit? Your progress will be lost.',
+          style: TextStyle(color: Colors.white70),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('CONTINUE', style: TextStyle(color: Color(0xFFFFD700))),
+            child: const Text(
+              'CONTINUE',
+              style: TextStyle(color: Color(0xFFFFD700)),
+            ),
           ),
           TextButton(
             onPressed: () {
@@ -233,7 +270,10 @@ class QuizScreen extends StatelessWidget {
               Navigator.pop(context); // Close dialog
               Navigator.pop(context); // Go back to level screen
             },
-            child: const Text('QUIT', style: TextStyle(color: Colors.redAccent)),
+            child: const Text(
+              'QUIT',
+              style: TextStyle(color: Colors.redAccent),
+            ),
           ),
         ],
       ),
@@ -291,18 +331,26 @@ class _OptionButton extends StatelessWidget {
               backgroundColor: Colors.white24,
               child: Text(
                 String.fromCharCode(65 + index),
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             const SizedBox(width: 15),
             Expanded(
               child: Text(
                 text,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
-            if (showResult && isCorrect) const Icon(Icons.check_circle, color: Colors.white),
-            if (showResult && isSelected && !isCorrect) const Icon(Icons.cancel, color: Colors.white),
+            if (showResult && isCorrect)
+              const Icon(Icons.check_circle, color: Colors.white),
+            if (showResult && isSelected && !isCorrect)
+              const Icon(Icons.cancel, color: Colors.white),
           ],
         ),
       ),
