@@ -44,4 +44,20 @@ class Question {
       imageUrl: map['imageUrl'],
     );
   }
+
+  Question shuffled() {
+    final correctOption = options[correctAnswerIndex];
+    final shuffledOptions = List<String>.from(options)..shuffle();
+    final newCorrectIndex = shuffledOptions.indexOf(correctOption);
+    return Question(
+      id: id,
+      text: text,
+      options: shuffledOptions,
+      correctAnswerIndex: newCorrectIndex,
+      category: category,
+      level: level,
+      explanation: explanation,
+      imageUrl: imageUrl,
+    );
+  }
 }

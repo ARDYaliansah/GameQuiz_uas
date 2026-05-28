@@ -6,7 +6,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'level_screen.dart';
 
 class CategoryScreen extends StatelessWidget {
-  const CategoryScreen({super.key});
+  final bool isStudyMode;
+
+  const CategoryScreen({super.key, this.isStudyMode = false});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +18,7 @@ class CategoryScreen extends StatelessWidget {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Text(
-          'Select Category',
+          isStudyMode ? 'Pilih Kategori Belajar' : 'Pilih Kategori Kuis',
           style: GoogleFonts.outfit(fontWeight: FontWeight.w700),
         ),
         centerTitle: true,
@@ -44,7 +46,10 @@ class CategoryScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 15),
-                  child: _CategoryCard(category: categories[index]),
+                  child: _CategoryCard(
+                    category: categories[index],
+                    isStudyMode: isStudyMode,
+                  ),
                 );
               },
             ),
@@ -57,8 +62,12 @@ class CategoryScreen extends StatelessWidget {
 
 class _CategoryCard extends StatelessWidget {
   final String category;
+  final bool isStudyMode;
 
-  const _CategoryCard({required this.category});
+  const _CategoryCard({
+    required this.category,
+    required this.isStudyMode,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -82,8 +91,11 @@ class _CategoryCard extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) =>
-                    LevelScreen(category: category, categoryColor: color),
+                builder: (context) => LevelScreen(
+                  category: category,
+                  categoryColor: color,
+                  isStudyMode: isStudyMode,
+                ),
               ),
             );
           },

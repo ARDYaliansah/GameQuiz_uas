@@ -27,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: Container(
         width: double.infinity,
+        height: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
@@ -35,56 +36,81 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         child: SafeArea(
-          child: Column(
-            children: [
-              const Spacer(),
-              _buildHeader(),
-              const Spacer(),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
+          child: Center(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _buildMenuButton(
-                      context,
-                      'PLAY GAME',
-                      Icons.play_arrow_rounded,
-                      const Color(0xFFFFD700),
-                      () => Navigator.push(context, MaterialPageRoute(builder: (context) => const CategoryScreen())),
-                    ),
-                    const SizedBox(height: 15),
-                    _buildMenuButton(
-                      context,
-                      'HIGH SCORE',
-                      Icons.emoji_events_rounded,
-                      const Color(0xFFE0E0E0),
-                      () async {
-                        int highScore = await storage.getHighScore();
-                        if (context.mounted) {
-                          _showHighScoreDialog(context, highScore);
-                        }
-                      },
-                    ),
-                    const SizedBox(height: 15),
-                    _buildMenuButton(
-                      context,
-                      'SETTINGS',
-                      Icons.settings_rounded,
-                      const Color(0xFFE0E0E0),
-                      () => _showSettingsDialog(context),
-                    ),
-                    const SizedBox(height: 15),
-                    _buildMenuButton(
-                      context,
-                      'EXIT',
-                      Icons.exit_to_app_rounded,
-                      const Color(0xFFFF5252),
-                      () => _showExitConfirmation(context),
+                    _buildHeader(),
+                    const SizedBox(height: 30),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 40),
+                      child: Column(
+                        children: [
+                          _buildMenuButton(
+                            context,
+                            'BELAJAR DULU',
+                            Icons.menu_book_rounded,
+                            const Color(0xFF00FF87),
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const CategoryScreen(isStudyMode: true),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 15),
+                          _buildMenuButton(
+                            context,
+                            'MAIN KUIS',
+                            Icons.sports_esports_rounded,
+                            const Color(0xFFFFD700),
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const CategoryScreen(isStudyMode: false),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 15),
+                          _buildMenuButton(
+                            context,
+                            'HIGH SCORE',
+                            Icons.emoji_events_rounded,
+                            const Color(0xFFE0E0E0),
+                            () async {
+                              int highScore = await storage.getHighScore();
+                              if (context.mounted) {
+                                _showHighScoreDialog(context, highScore);
+                              }
+                            },
+                          ),
+                          const SizedBox(height: 15),
+                          _buildMenuButton(
+                            context,
+                            'SETTINGS',
+                            Icons.settings_rounded,
+                            const Color(0xFFE0E0E0),
+                            () => _showSettingsDialog(context),
+                          ),
+                          const SizedBox(height: 15),
+                          _buildMenuButton(
+                            context,
+                            'EXIT',
+                            Icons.exit_to_app_rounded,
+                            const Color(0xFFFF5252),
+                            () => _showExitConfirmation(context),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 40),
-            ],
+            ),
           ),
         ),
       ),
@@ -133,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildMenuButton(BuildContext context, String title, IconData icon, Color color, VoidCallback onTap) {
-    bool isPrimary = title == 'PLAY GAME';
+    bool isPrimary = title == 'BELAJAR DULU' || title == 'MAIN KUIS';
     bool isExit = title == 'EXIT';
     return Container(
       width: double.infinity,

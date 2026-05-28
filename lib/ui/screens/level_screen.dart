@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/quiz_provider.dart';
 import '../../data/repositories/quiz_repository.dart';
+import '../../providers/quiz_provider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'study_screen.dart';
 import 'quiz_screen.dart';
 
 class LevelScreen extends StatelessWidget {
   final String category;
   final Color categoryColor;
+  final bool isStudyMode;
 
   const LevelScreen({
     super.key,
     required this.category,
     required this.categoryColor,
+    this.isStudyMode = false,
   });
 
   @override
@@ -22,7 +25,10 @@ class LevelScreen extends StatelessWidget {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text('$category Levels', style: GoogleFonts.outfit(fontWeight: FontWeight.w700)),
+        title: Text(
+          isStudyMode ? 'Belajar $category' : 'Kuis $category',
+          style: GoogleFonts.outfit(fontWeight: FontWeight.w700),
+        ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -50,11 +56,24 @@ class LevelScreen extends StatelessWidget {
               level: level,
               color: categoryColor,
               onTap: () {
-                context.read<QuizProvider>().startQuiz(category, level);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const QuizScreen()),
-                );
+                if (isStudyMode) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => StudyScreen(
+                        category: category,
+                        level: level,
+                        categoryColor: categoryColor,
+                      ),
+                    ),
+                  );
+                } else {
+                  context.read<QuizProvider>().startQuiz(category, level);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const QuizScreen()),
+                  );
+                }
               },
             );
           },

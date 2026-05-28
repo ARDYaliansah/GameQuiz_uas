@@ -24,9 +24,17 @@ class QuizRepository {
   List<Question> getQuestionsByCategoryAndLevel(String category, int level) {
     final questions = _allQuestions
         .where((q) => q.category == category && q.level == level)
+        .map((q) => q.shuffled())
         .toList();
     questions.shuffle();
     return questions;
+  }
+
+  List<Question> getQuestionsByCategoryAndLevelForStudy(String category, int level) {
+    return _allQuestions
+        .where((q) => q.category == category && q.level == level)
+        .map((q) => q.shuffled())
+        .toList();
   }
 
   int getLevelsCountForCategory(String category) {
