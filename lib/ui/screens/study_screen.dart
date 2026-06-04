@@ -102,12 +102,18 @@ class _StudyScreenState extends State<StudyScreen> {
             children: [
               // Header Info
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: widget.categoryColor.withOpacity(0.15),
                         borderRadius: BorderRadius.circular(15),
@@ -149,13 +155,18 @@ class _StudyScreenState extends State<StudyScreen> {
 
               // Progress Bar
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 5,
+                ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: LinearProgressIndicator(
                     value: (_currentPage + 1) / _questions.length,
                     backgroundColor: Colors.white.withOpacity(0.05),
-                    valueColor: AlwaysStoppedAnimation<Color>(widget.categoryColor),
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      widget.categoryColor,
+                    ),
                     minHeight: 6,
                   ),
                 ),
@@ -163,7 +174,10 @@ class _StudyScreenState extends State<StudyScreen> {
 
               // Page Indicator Text
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 8,
+                ),
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: Text(
@@ -191,7 +205,10 @@ class _StudyScreenState extends State<StudyScreen> {
                     final question = _questions[index];
                     return SingleChildScrollView(
                       physics: const BouncingScrollPhysics(),
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 10,
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -225,34 +242,53 @@ class _StudyScreenState extends State<StudyScreen> {
                                     ),
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(16),
-                                      child: question.imageUrl!.startsWith('http')
+                                      child:
+                                          question.imageUrl!.startsWith('http')
                                           ? Image.network(
                                               question.imageUrl!,
                                               height: 180,
                                               width: double.infinity,
                                               fit: BoxFit.cover,
-                                              loadingBuilder: (context, child, loadingProgress) {
-                                                if (loadingProgress == null) return child;
-                                                return Container(
-                                                  height: 180,
-                                                  color: Colors.white.withOpacity(0.05),
-                                                  child: const Center(
-                                                    child: CircularProgressIndicator(
-                                                      color: Color(0xFFFFD700),
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                              errorBuilder: (context, error, stackTrace) =>
-                                                  _buildImageError(),
+                                              loadingBuilder:
+                                                  (
+                                                    context,
+                                                    child,
+                                                    loadingProgress,
+                                                  ) {
+                                                    if (loadingProgress == null)
+                                                      return child;
+                                                    return Container(
+                                                      height: 180,
+                                                      color: Colors.white
+                                                          .withOpacity(0.05),
+                                                      child: const Center(
+                                                        child:
+                                                            CircularProgressIndicator(
+                                                              color: Color(
+                                                                0xFFFFD700,
+                                                              ),
+                                                            ),
+                                                      ),
+                                                    );
+                                                  },
+                                              errorBuilder:
+                                                  (
+                                                    context,
+                                                    error,
+                                                    stackTrace,
+                                                  ) => _buildImageError(),
                                             )
                                           : Image.asset(
                                               question.imageUrl!,
                                               height: 180,
                                               width: double.infinity,
                                               fit: BoxFit.cover,
-                                              errorBuilder: (context, error, stackTrace) =>
-                                                  _buildImageError(),
+                                              errorBuilder:
+                                                  (
+                                                    context,
+                                                    error,
+                                                    stackTrace,
+                                                  ) => _buildImageError(),
                                             ),
                                     ),
                                   ),
@@ -272,76 +308,81 @@ class _StudyScreenState extends State<StudyScreen> {
                                 const SizedBox(height: 20),
 
                                 // Options List
-                                ...List.generate(
-                                  question.options.length,
-                                  (optIndex) {
-                                    final isCorrect =
-                                        optIndex == question.correctAnswerIndex;
-                                    return Padding(
-                                      padding: const EdgeInsets.only(bottom: 10),
-                                      child: Container(
-                                        width: double.infinity,
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 14,
-                                          horizontal: 16,
-                                        ),
-                                        decoration: BoxDecoration(
+                                ...List.generate(question.options.length, (
+                                  optIndex,
+                                ) {
+                                  final isCorrect =
+                                      optIndex == question.correctAnswerIndex;
+                                  return Padding(
+                                    padding: const EdgeInsets.only(bottom: 10),
+                                    child: Container(
+                                      width: double.infinity,
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 14,
+                                        horizontal: 16,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: isCorrect
+                                            ? const Color(
+                                                0xFF00FF87,
+                                              ).withOpacity(0.15)
+                                            : Colors.white.withOpacity(0.02),
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(
                                           color: isCorrect
-                                              ? const Color(0xFF00FF87).withOpacity(0.15)
-                                              : Colors.white.withOpacity(0.02),
-                                          borderRadius: BorderRadius.circular(12),
-                                          border: Border.all(
-                                            color: isCorrect
-                                                ? const Color(0xFF00FF87).withOpacity(0.4)
-                                                : Colors.white.withOpacity(0.05),
-                                            width: isCorrect ? 1.5 : 1,
-                                          ),
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            CircleAvatar(
-                                              radius: 12,
-                                              backgroundColor: isCorrect
-                                                  ? const Color(0xFF00FF87)
-                                                  : Colors.white24,
-                                              child: Text(
-                                                String.fromCharCode(65 + optIndex),
-                                                style: GoogleFonts.outfit(
-                                                  color: isCorrect
-                                                      ? Colors.black
-                                                      : Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 12,
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(width: 12),
-                                            Expanded(
-                                              child: Text(
-                                                question.options[optIndex],
-                                                style: GoogleFonts.outfit(
-                                                  color: isCorrect
-                                                      ? Colors.white
-                                                      : Colors.white70,
-                                                  fontWeight: isCorrect
-                                                      ? FontWeight.w600
-                                                      : FontWeight.w400,
-                                                  fontSize: 15,
-                                                ),
-                                              ),
-                                            ),
-                                            if (isCorrect)
-                                              const Icon(
-                                                Icons.check_circle_rounded,
-                                                color: Color(0xFF00FF87),
-                                                size: 18,
-                                              ),
-                                          ],
+                                              ? const Color(
+                                                  0xFF00FF87,
+                                                ).withOpacity(0.4)
+                                              : Colors.white.withOpacity(0.05),
+                                          width: isCorrect ? 1.5 : 1,
                                         ),
                                       ),
-                                    );
-                                  },
-                                ),
+                                      child: Row(
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 12,
+                                            backgroundColor: isCorrect
+                                                ? const Color(0xFF00FF87)
+                                                : Colors.white24,
+                                            child: Text(
+                                              String.fromCharCode(
+                                                65 + optIndex,
+                                              ),
+                                              style: GoogleFonts.outfit(
+                                                color: isCorrect
+                                                    ? Colors.black
+                                                    : Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 12),
+                                          Expanded(
+                                            child: Text(
+                                              question.options[optIndex],
+                                              style: GoogleFonts.outfit(
+                                                color: isCorrect
+                                                    ? Colors.white
+                                                    : Colors.white70,
+                                                fontWeight: isCorrect
+                                                    ? FontWeight.w600
+                                                    : FontWeight.w400,
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                          ),
+                                          if (isCorrect)
+                                            const Icon(
+                                              Icons.check_circle_rounded,
+                                              color: Color(0xFF00FF87),
+                                              size: 18,
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }),
                               ],
                             ),
                           ),
@@ -399,7 +440,9 @@ class _StudyScreenState extends State<StudyScreen> {
                               ],
                             ),
                           ),
-                          const SizedBox(height: 80), // extra padding for bottom button
+                          const SizedBox(
+                            height: 80,
+                          ), // extra padding for bottom button
                         ],
                       ),
                     );
@@ -439,7 +482,9 @@ class _StudyScreenState extends State<StudyScreen> {
                                 },
                                 style: OutlinedButton.styleFrom(
                                   side: BorderSide(
-                                    color: widget.categoryColor.withOpacity(0.4),
+                                    color: widget.categoryColor.withOpacity(
+                                      0.4,
+                                    ),
                                   ),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15),
@@ -449,7 +494,10 @@ class _StudyScreenState extends State<StudyScreen> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    const Icon(Icons.arrow_back_ios_new_rounded, size: 14),
+                                    const Icon(
+                                      Icons.arrow_back_ios_new_rounded,
+                                      size: 14,
+                                    ),
                                     const SizedBox(width: 8),
                                     Text(
                                       'Sebelumnya',
@@ -464,7 +512,8 @@ class _StudyScreenState extends State<StudyScreen> {
                             ),
                           ),
 
-                        if (_currentPage > 0 && _currentPage < _questions.length - 1)
+                        if (_currentPage > 0 &&
+                            _currentPage < _questions.length - 1)
                           const SizedBox(width: 15),
 
                         // Next Button / Start Quiz
@@ -483,10 +532,12 @@ class _StudyScreenState extends State<StudyScreen> {
                                 }
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: _currentPage == _questions.length - 1
+                                backgroundColor:
+                                    _currentPage == _questions.length - 1
                                     ? const Color(0xFFFFD700)
                                     : widget.categoryColor,
-                                foregroundColor: _currentPage == _questions.length - 1
+                                foregroundColor:
+                                    _currentPage == _questions.length - 1
                                     ? Colors.black87
                                     : Colors.white,
                                 shape: RoundedRectangleBorder(
@@ -506,8 +557,8 @@ class _StudyScreenState extends State<StudyScreen> {
                                       fontSize: 14,
                                       letterSpacing:
                                           _currentPage == _questions.length - 1
-                                              ? 1.0
-                                              : 0.0,
+                                          ? 1.0
+                                          : 0.0,
                                     ),
                                   ),
                                   const SizedBox(width: 6),
