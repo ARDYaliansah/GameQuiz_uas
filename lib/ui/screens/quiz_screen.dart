@@ -47,7 +47,7 @@ class QuizScreen extends StatelessWidget {
                             Icons.close_rounded,
                             color: Colors.white70,
                           ),
-                          tooltip: 'Quit Quiz',
+                          tooltip: 'Keluar Kuis',
                         ),
                         Row(
                           children: List.generate(
@@ -100,14 +100,52 @@ class QuizScreen extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 20),
-                    // Timer
+                    // Active Timer & Progress Bar
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Pertanyaan ${provider.currentQuestionIndex + 1}/${provider.questions.length}',
+                          style: GoogleFonts.outfit(
+                            color: Colors.white60,
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.timer_outlined,
+                              size: 14,
+                              color: provider.secondsRemaining <= 5
+                                  ? Colors.redAccent
+                                  : Colors.white60,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              '${provider.secondsRemaining}s',
+                              style: GoogleFonts.outfit(
+                                color: provider.secondsRemaining <= 5
+                                    ? Colors.redAccent
+                                    : Colors.white60,
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
                     ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: LinearProgressIndicator(
-                        value: provider.progress,
+                        value: provider.timerProgress,
                         backgroundColor: Colors.white.withOpacity(0.05),
-                        valueColor: const AlwaysStoppedAnimation<Color>(
-                          Color(0xFFFFD700),
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          provider.secondsRemaining <= 5
+                              ? Colors.redAccent
+                              : const Color(0xFFFFD700),
                         ),
                         minHeight: 8,
                       ),
@@ -136,6 +174,7 @@ class QuizScreen extends StatelessWidget {
     dynamic question,
   ) {
     return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
       child: Column(
         key: ValueKey(provider.currentQuestionIndex),
         children: [
@@ -211,23 +250,207 @@ class QuizScreen extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: 20),
+          
+          // Lifelines Buttons Row
+          _buildLifelines(context, provider),
+          
           // Options
           ...List.generate(
             question.options.length,
-            (index) => Padding(
-              padding: const EdgeInsets.only(bottom: 15),
-              child: _OptionButton(
-                index: index,
-                text: question.options[index],
-                isSelected: provider.selectedAnswerIndex == index,
-                isCorrect: index == question.correctAnswerIndex,
-                showResult: provider.isAnswering,
-                onTap: () => provider.answerQuestion(index),
+            (index) {
+              if (provider.removedOptionIndices.contains(index)) {
+                return const SizedBox.shrink(); // Hide eliminated option
+              }
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 15),
+                child: _OptionButton(
+                  index: index,
+                  text: question.options[index],
+                  isSelected: provider.selectedAnswerIndex == index,
+                  isCorrect: index == question.correctAnswerIndex,
+                  showResult: provider.isAnswering,
+                  onTap: () => provider.answerQuestion(index),
+                ),
+              );
+            },
+          ),
+          if (provider.isAnswering) ...[
+            const SizedBox(height: 15),
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.05),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: provider.selectedAnswerIndex == null
+                      ? Colors.redAccent.withOpacity(0.3)
+                      : (provider.selectedAnswerIndex == question.correctAnswerIndex)
+                          ? Colors.green.withOpacity(0.3)
+                          : Colors.redAccent.withOpacity(0.3),
+                  width: 1.5,
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.lightbulb_outline_rounded,
+                        color: provider.selectedAnswerIndex == null
+                            ? Colors.redAccent
+                            : (provider.selectedAnswerIndex == question.correctAnswerIndex)
+                                ? Colors.greenAccent
+                                : Colors.redAccent,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        provider.selectedAnswerIndex == null
+                            ? 'Waktu Habis! Penjelasan:'
+                            : (provider.selectedAnswerIndex == question.correctAnswerIndex)
+                                ? 'Benar! Penjelasan:'
+                                : 'Salah! Penjelasan:',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: provider.selectedAnswerIndex == null
+                              ? Colors.redAccent
+                              : (provider.selectedAnswerIndex == question.correctAnswerIndex)
+                                  ? Colors.greenAccent
+                                  : Colors.redAccent,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    question.explanation.isEmpty || question.explanation.contains('Pertanyaan level')
+                        ? 'Jawaban yang benar adalah "${question.options[question.correctAnswerIndex]}".'
+                        : question.explanation,
+                    style: TextStyle(fontSize: 14, color: Colors.white.withOpacity(0.8), height: 1.5),
+                  ),
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 55,
+                    child: ElevatedButton(
+                      onPressed: () => provider.nextQuestionManual(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFFFD700),
+                        foregroundColor: Colors.black87,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            provider.currentQuestionIndex == provider.questions.length - 1
+                                ? 'SELESAI'
+                                : 'LANJUTKAN',
+                            style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15, letterSpacing: 1),
+                          ),
+                          const SizedBox(width: 8),
+                          const Icon(Icons.arrow_forward_rounded, size: 16),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLifelines(BuildContext context, QuizProvider provider) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _buildLifelineButton(
+            icon: Icons.brightness_medium_rounded,
+            label: '50:50',
+            isUsed: provider.isFiftyFiftyUsed,
+            isEnabled: !provider.isAnswering && !provider.isGameOver,
+            onTap: () => provider.useFiftyFifty(),
+          ),
+          _buildLifelineButton(
+            icon: Icons.more_time_rounded,
+            label: '+10s',
+            isUsed: provider.isExtraTimeUsed,
+            isEnabled: !provider.isAnswering && !provider.isGameOver,
+            onTap: () => provider.useExtraTime(),
+          ),
+          _buildLifelineButton(
+            icon: Icons.skip_next_rounded,
+            label: 'Lewati',
+            isUsed: provider.isSkipUsed,
+            isEnabled: !provider.isAnswering && !provider.isGameOver,
+            onTap: () => provider.useSkipQuestion(),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildLifelineButton({
+    required IconData icon,
+    required String label,
+    required bool isUsed,
+    required bool isEnabled,
+    required VoidCallback onTap,
+  }) {
+    final activeColor = const Color(0xFFFFD700);
+    return Opacity(
+      opacity: isEnabled ? 1.0 : 0.5,
+      child: Container(
+        height: 44,
+        decoration: BoxDecoration(
+          color: isUsed
+              ? Colors.white.withOpacity(0.01)
+              : Colors.white.withOpacity(0.05),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isUsed
+                ? Colors.white.withOpacity(0.05)
+                : activeColor.withOpacity(0.2),
+            width: 1,
+          ),
+        ),
+        child: InkWell(
+          onTap: (isEnabled && !isUsed) ? onTap : null,
+          borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  icon,
+                  size: 16,
+                  color: isUsed ? Colors.white24 : activeColor,
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                    color: isUsed ? Colors.white24 : Colors.white,
+                    decoration: isUsed ? TextDecoration.lineThrough : null,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -251,16 +474,16 @@ class QuizScreen extends StatelessWidget {
       builder: (context) => AlertDialog(
         backgroundColor: const Color(0xFF1D2136),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('Quit Quiz?', style: TextStyle(color: Colors.white)),
+        title: const Text('Keluar Kuis?', style: TextStyle(color: Colors.white)),
         content: const Text(
-          'Are you sure you want to quit? Your progress will be lost.',
+          'Apakah Anda yakin ingin keluar? Semua progres Anda akan hilang.',
           style: TextStyle(color: Colors.white70),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text(
-              'CONTINUE',
+              'LANJUTKAN',
               style: TextStyle(color: Color(0xFFFFD700)),
             ),
           ),
@@ -271,7 +494,7 @@ class QuizScreen extends StatelessWidget {
               Navigator.pop(context); // Go back to level screen
             },
             child: const Text(
-              'QUIT',
+              'KELUAR',
               style: TextStyle(color: Colors.redAccent),
             ),
           ),
@@ -310,7 +533,7 @@ class _OptionButton extends StatelessWidget {
     }
 
     return InkWell(
-      onTap: onTap,
+      onTap: showResult ? null : onTap,
       borderRadius: BorderRadius.circular(15),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
