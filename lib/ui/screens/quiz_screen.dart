@@ -68,10 +68,10 @@ class QuizScreen extends StatelessWidget {
                             vertical: 8,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.05),
+                            color: Colors.white.withValues(alpha: 0.05),
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
-                              color: Colors.white.withOpacity(0.1),
+                              color: Colors.white.withValues(alpha: 0.1),
                             ),
                           ),
                           child: Column(
@@ -105,7 +105,7 @@ class QuizScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                       child: LinearProgressIndicator(
                         value: provider.progress,
-                        backgroundColor: Colors.white.withOpacity(0.05),
+                        backgroundColor: Colors.white.withValues(alpha: 0.05),
                         valueColor: const AlwaysStoppedAnimation<Color>(
                           Color(0xFFFFD700),
                         ),
@@ -147,7 +147,7 @@ class QuizScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
+                      color: Colors.black.withValues(alpha: 0.3),
                       blurRadius: 20,
                       offset: const Offset(0, 10),
                     ),
@@ -166,7 +166,7 @@ class QuizScreen extends StatelessWidget {
                             return Container(
                               height: 220,
                               width: double.infinity,
-                              color: Colors.white.withOpacity(0.05),
+                              color: Colors.white.withValues(alpha: 0.05),
                               child: Center(
                                 child: CircularProgressIndicator(
                                   value:
@@ -197,9 +197,9 @@ class QuizScreen extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.all(30),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.05),
+              color: Colors.white.withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(30),
-              border: Border.all(color: Colors.white.withOpacity(0.1)),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
             ),
             child: Text(
               question.text,
@@ -236,7 +236,7 @@ class QuizScreen extends StatelessWidget {
     return Container(
       height: 200,
       width: double.infinity,
-      color: Colors.grey.withOpacity(0.2),
+      color: Colors.grey.withValues(alpha: 0.2),
       child: const Icon(
         Icons.image_not_supported,
         size: 50,
@@ -303,9 +303,9 @@ class _OptionButton extends StatelessWidget {
     Color cardColor = Colors.white10;
     if (showResult) {
       if (isCorrect) {
-        cardColor = Colors.green.withOpacity(0.6);
+        cardColor = Colors.green.withValues(alpha: 0.6);
       } else if (isSelected && !isCorrect) {
-        cardColor = Colors.red.withOpacity(0.6);
+        cardColor = Colors.red.withValues(alpha: 0.6);
       }
     }
 

@@ -77,7 +77,7 @@ class _StudyScreenState extends State<StudyScreen> {
         _fontSizeMultiplier = prefs.getDouble('book_reader_font_size') ?? 1.0;
       });
     } catch (e) {
-      print('Error loading book reader settings: $e');
+      debugPrint('Error loading book reader settings: $e');
     }
   }
 
@@ -88,7 +88,7 @@ class _StudyScreenState extends State<StudyScreen> {
       await prefs.setInt('book_reader_font', _selectedFont.index);
       await prefs.setDouble('book_reader_font_size', _fontSizeMultiplier);
     } catch (e) {
-      print('Error saving book reader settings: $e');
+      debugPrint('Error saving book reader settings: $e');
     }
   }
 
@@ -276,7 +276,7 @@ class _StudyScreenState extends State<StudyScreen> {
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.4),
+                          color: Colors.black.withValues(alpha: 0.4),
                           blurRadius: 16,
                           offset: const Offset(0, 8),
                         ),
@@ -340,8 +340,8 @@ class _StudyScreenState extends State<StudyScreen> {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Colors.white.withOpacity(0.05),
-                    Colors.black.withOpacity(0.2),
+                    Colors.white.withValues(alpha: 0.05),
+                    Colors.black.withValues(alpha: 0.2),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -360,8 +360,8 @@ class _StudyScreenState extends State<StudyScreen> {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Colors.black.withOpacity(0.4),
-                    Colors.black.withOpacity(0.0),
+                    Colors.black.withValues(alpha: 0.4),
+                    Colors.black.withValues(alpha: 0.0),
                   ],
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
@@ -376,7 +376,7 @@ class _StudyScreenState extends State<StudyScreen> {
             right: 12,
             child: Icon(
               Icons.star_rounded,
-              color: const Color(0xFFD4AF37).withOpacity(0.6),
+              color: const Color(0xFFD4AF37).withValues(alpha: 0.6),
               size: 24,
             ),
           ),
@@ -385,7 +385,7 @@ class _StudyScreenState extends State<StudyScreen> {
             right: 12,
             child: Icon(
               Icons.star_rounded,
-              color: const Color(0xFFD4AF37).withOpacity(0.6),
+              color: const Color(0xFFD4AF37).withValues(alpha: 0.6),
               size: 24,
             ),
           ),
@@ -406,14 +406,14 @@ class _StudyScreenState extends State<StudyScreen> {
                   padding: const EdgeInsets.all(22),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.black.withOpacity(0.25),
+                    color: Colors.black.withValues(alpha: 0.25),
                     border: Border.all(
                       color: const Color(0xFFD4AF37), // Gold
                       width: 2.5,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
+                        color: Colors.black.withValues(alpha: 0.3),
                         blurRadius: 10,
                         offset: const Offset(0, 4),
                       ),
@@ -549,7 +549,7 @@ class _StudyScreenState extends State<StudyScreen> {
                   child: Container(
                     width: 80,
                     height: 2,
-                    color: widget.categoryColor.withOpacity(0.5),
+                    color: widget.categoryColor.withValues(alpha: 0.5),
                   ),
                 ),
                 const SizedBox(height: 30),
@@ -564,7 +564,7 @@ class _StudyScreenState extends State<StudyScreen> {
                         decoration: BoxDecoration(
                           border: Border(
                             bottom: BorderSide(
-                              color: borderColor.withOpacity(0.3),
+                              color: borderColor.withValues(alpha: 0.3),
                               width: 0.8,
                             ),
                           ),
@@ -618,7 +618,7 @@ class _StudyScreenState extends State<StudyScreen> {
                                 Icon(
                                   Icons.arrow_forward_ios_rounded,
                                   size: 10,
-                                  color: secColor.withOpacity(0.5),
+                                  color: secColor.withValues(alpha: 0.5),
                                 ),
                               ],
                             ),
@@ -666,14 +666,14 @@ class _StudyScreenState extends State<StudyScreen> {
               width: 14,
               height: 40,
               decoration: BoxDecoration(
-                color: brandColor.withOpacity(0.9),
+                color: brandColor.withValues(alpha: 0.9),
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(4),
                   bottomRight: Radius.circular(4),
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.15),
+                    color: Colors.black.withValues(alpha: 0.15),
                     blurRadius: 3,
                     offset: const Offset(1, 2),
                   ),
@@ -719,7 +719,7 @@ class _StudyScreenState extends State<StudyScreen> {
                   Container(
                     width: 60,
                     height: 2.5,
-                    color: brandColor.withOpacity(0.6),
+                    color: brandColor.withValues(alpha: 0.6),
                   ),
                   const SizedBox(height: 24),
 
@@ -731,7 +731,7 @@ class _StudyScreenState extends State<StudyScreen> {
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.12),
+                            color: Colors.black.withValues(alpha: 0.12),
                             blurRadius: 10,
                             offset: const Offset(0, 5),
                           ),
@@ -770,10 +770,10 @@ class _StudyScreenState extends State<StudyScreen> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(18),
                     decoration: BoxDecoration(
-                      color: brandColor.withOpacity(0.07),
+                      color: brandColor.withValues(alpha: 0.07),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: brandColor.withOpacity(0.3),
+                        color: brandColor.withValues(alpha: 0.3),
                         width: 1.5,
                       ),
                     ),
@@ -864,10 +864,10 @@ class _StudyScreenState extends State<StudyScreen> {
                     vertical: 18,
                   ),
                   decoration: BoxDecoration(
-                    color: widget.categoryColor.withOpacity(0.08),
+                    color: widget.categoryColor.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: widget.categoryColor.withOpacity(0.25),
+                      color: widget.categoryColor.withValues(alpha: 0.25),
                       width: 1.5,
                     ),
                   ),
@@ -897,7 +897,7 @@ class _StudyScreenState extends State<StudyScreen> {
                       Container(
                         width: 1.5,
                         height: 40,
-                        color: secColor.withOpacity(0.2),
+                        color: secColor.withValues(alpha: 0.2),
                       ),
                       Column(
                         children: [
@@ -1026,8 +1026,8 @@ class _StudyScreenState extends State<StudyScreen> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: _selectedTheme == BookTheme.dark
-            ? Colors.white.withOpacity(0.03)
-            : Colors.black.withOpacity(0.02),
+            ? Colors.white.withValues(alpha: 0.03)
+            : Colors.black.withValues(alpha: 0.02),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: borderColor, width: 1),
       ),
@@ -1069,7 +1069,7 @@ class _StudyScreenState extends State<StudyScreen> {
 
             if (hasAnswered) {
               if (isCorrect) {
-                buttonBgColor = const Color(0xFF00FF87).withOpacity(0.12);
+                buttonBgColor = const Color(0xFF00FF87).withValues(alpha: 0.12);
                 buttonBorderColor = const Color(0xFF00FF87);
                 optionTextColor = _selectedTheme == BookTheme.dark
                     ? Colors.white
@@ -1080,7 +1080,7 @@ class _StudyScreenState extends State<StudyScreen> {
                   size: 16,
                 );
               } else if (isSelected) {
-                buttonBgColor = const Color(0xFFFF4B2B).withOpacity(0.12);
+                buttonBgColor = const Color(0xFFFF4B2B).withValues(alpha: 0.12);
                 buttonBorderColor = const Color(0xFFFF4B2B);
                 optionTextColor = _selectedTheme == BookTheme.dark
                     ? Colors.white
@@ -1091,11 +1091,11 @@ class _StudyScreenState extends State<StudyScreen> {
                   size: 16,
                 );
               } else {
-                optionTextColor = secColor.withOpacity(0.5);
+                optionTextColor = secColor.withValues(alpha: 0.5);
               }
             } else {
               if (isSelected) {
-                buttonBgColor = brandColor.withOpacity(0.1);
+                buttonBgColor = brandColor.withValues(alpha: 0.1);
                 buttonBorderColor = brandColor;
               }
             }
@@ -1137,7 +1137,7 @@ class _StudyScreenState extends State<StudyScreen> {
                             ? const Color(0xFFFF4B2B)
                             : isSelected
                             ? brandColor
-                            : secColor.withOpacity(0.3),
+                            : secColor.withValues(alpha: 0.3),
                         child: Text(
                           String.fromCharCode(65 + optIdx),
                           style: GoogleFonts.outfit(
@@ -1182,10 +1182,10 @@ class _StudyScreenState extends State<StudyScreen> {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Colors.black.withOpacity(
-                _selectedTheme == BookTheme.dark ? 0.35 : 0.12,
+              Colors.black.withValues(
+                alpha: _selectedTheme == BookTheme.dark ? 0.35 : 0.12,
               ),
-              Colors.black.withOpacity(0.0),
+              Colors.black.withValues(alpha: 0.0),
             ],
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
@@ -1264,7 +1264,7 @@ class _StudyScreenState extends State<StudyScreen> {
     return Container(
       height: 170,
       width: double.infinity,
-      color: Colors.grey.withOpacity(0.2),
+      color: Colors.grey.withValues(alpha: 0.2),
       child: const Icon(
         Icons.image_not_supported,
         size: 50,
@@ -1321,7 +1321,7 @@ class _StudyScreenState extends State<StudyScreen> {
                       width: 40,
                       height: 5,
                       decoration: BoxDecoration(
-                        color: secColor.withOpacity(0.3),
+                        color: secColor.withValues(alpha: 0.3),
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
@@ -1543,7 +1543,7 @@ class _StudyScreenState extends State<StudyScreen> {
           _saveSettings();
         }
       },
-      selectedColor: widget.categoryColor.withOpacity(0.2),
+      selectedColor: widget.categoryColor.withValues(alpha: 0.2),
       backgroundColor: Colors.transparent,
       labelStyle: GoogleFonts.outfit(
         color: isSelected ? widget.categoryColor : textColor,
