@@ -638,7 +638,6 @@ class _StudyScreenState extends State<StudyScreen> {
 
   Widget _buildContentPage(BookPage page, int pageIdx) {
     final paperColor = _getPaperColor(_selectedTheme);
-    final textColor = _getTextColor(_selectedTheme);
     final brandColor = widget.categoryColor;
 
     final textStyle = _getBookTextStyle(
